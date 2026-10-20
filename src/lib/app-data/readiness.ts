@@ -1,6 +1,10 @@
-/** Connector readiness status helpers. */
-export type ReadinessState = "unknown" | "ready" | "blocked" | "error";
+import { createServerFn } from "@tanstack/react-start";
 
-export function isReady(state: ReadinessState): boolean {
-  return state === "ready";
-}
+export type ConnectorReadiness = { ready: boolean };
+
+export const getConnectorReadiness = createServerFn({ method: "POST" }).handler(
+  async (): Promise<ConnectorReadiness> => {
+    const { isConnectorTokenReady } = await import("./client.server.ts");
+    return { ready: isConnectorTokenReady() };
+  },
+);
