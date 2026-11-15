@@ -1,37 +1,29 @@
 /* Planning figures extracted from the FloodAid scenario workbooks.
    District coordinates are kilometres from Dhaka. Aid tonnes and divisional
-   flows are the MILP solutions (base network and flexible network). */
-export type DivisionName =
-  | "Dhaka"
-  | "Chattogram"
-  | "Mymensingh"
-  | "Sylhet"
-  | "Rangpur"
-  | "Rajshahi"
-  | "Khulna"
-  | "Barishal"
+   flows are the MILP solutions (base network and flexible network).
+   Data is split across modules for maintainability; public API is unchanged. */
+import type { NetworkPlan } from "./types"
+import { northPlan } from "./plan-north"
+import { northFlexPlan } from "./plan-northFlex"
+import { southPlan } from "./plan-south"
+import { southFlexPlan } from "./plan-southFlex"
+import { stochasticPlan } from "./plan-stochastic"
+import { stochasticFlexPlan } from "./plan-stochasticFlex"
 
-export type PortName = "Dhaka" | "Chattogram" | "Sylhet" | "Jashore" | "Bagerhat"
+export type {
+  DivisionName,
+  PortName,
+  DistrictSeed,
+  DistrictPlan,
+  NetworkPlan,
+} from "./types"
+export { DISTRICTS } from "./districts"
 
-export type DistrictSeed = {
-  name: string
-  x: number
-  y: number
-  population: number
-  division: DivisionName
+export const PLANS: Record<string, NetworkPlan> = {
+  north: northPlan,
+  northFlex: northFlexPlan,
+  south: southPlan,
+  southFlex: southFlexPlan,
+  stochastic: stochasticPlan,
+  stochasticFlex: stochasticFlexPlan,
 }
-
-export type DistrictPlan = {
-  demand: number
-  affected: number
-  from: Partial<Record<DivisionName, number>>
-}
-
-export type NetworkPlan = {
-  districts: Record<string, DistrictPlan>
-  ports: Record<PortName, Partial<Record<DivisionName, number>>>
-}
-
-export const DISTRICTS: DistrictSeed[] = []
-
-export const PLANS: Record<string, NetworkPlan> = {}
